@@ -1,0 +1,155 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{78CB40BF-F12A-3E36-9F46-5490A2ED03E3}</ProjectGuid>
+    <WindowsTargetPlatformVersion>7.0</WindowsTargetPlatformVersion>
+    <Keyword>Win32Proj</Keyword>
+    <Platform>x64</Platform>
+    <ProjectName>rabbitmq-static</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141_xp</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141_xp</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IntDir>$(SolutionDir)$(Platform)\$(Configuration)\$(TargetName)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IntDir>$(SolutionDir)$(Platform)\$(Configuration)\$(TargetName)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\librabbitmq;..\..\rabbitmq-c\librabbitmq;..\..\rabbitmq-c\librabbitmq\win32;C:\OpenSSL-Win64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <CompileAs>CompileAsC</CompileAs>
+      <DebugInformationFormat>OldStyle</DebugInformationFormat>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS;AMQP_STATIC;HAVE_CONFIG_H;WITH_SSL=1;AMQP_BUILD;CMAKE_INTDIR="Debug";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;AMQP_STATIC;HAVE_CONFIG_H;WITH_SSL=1;AMQP_BUILD;CMAKE_INTDIR=\"Debug\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\DevelopmentEnvironment\workspace\rabbitmq-c-async\vsprojects\librabbitmq;..\..\rabbitmq-c\librabbitmq;..\..\rabbitmq-c\librabbitmq\win32;C:\OpenSSL-Win64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\DevelopmentEnvironment\workspace\rabbitmq-c-async\vsprojects\librabbitmq;..\..\rabbitmq-c\librabbitmq;..\..\rabbitmq-c\librabbitmq\win32;C:\OpenSSL-Win64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\librabbitmq;..\..\rabbitmq-c\librabbitmq;..\..\rabbitmq-c\librabbitmq\win32;C:\OpenSSL-Win64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <CompileAs>CompileAsC</CompileAs>
+      <DebugInformationFormat>OldStyle</DebugInformationFormat>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS;NDEBUG;AMQP_STATIC;HAVE_CONFIG_H;WITH_SSL=1;AMQP_BUILD;CMAKE_INTDIR="Release";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;AMQP_STATIC;HAVE_CONFIG_H;WITH_SSL=1;AMQP_BUILD;CMAKE_INTDIR=\"Release\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\DevelopmentEnvironment\workspace\rabbitmq-c-async\vsprojects\librabbitmq;..\..\rabbitmq-c\librabbitmq;..\..\rabbitmq-c\librabbitmq\win32;C:\OpenSSL-Win64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\DevelopmentEnvironment\workspace\rabbitmq-c-async\vsprojects\librabbitmq;..\..\rabbitmq-c\librabbitmq;..\..\rabbitmq-c\librabbitmq\win32;C:\OpenSSL-Win64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\rabbitmq-c\librabbitmq\amqp_framing.h" />
+    <ClCompile Include="..\..\rabbitmq-c\librabbitmq\amqp_framing.c" />
+    <ClCompile Include="..\..\rabbitmq-c\librabbitmq\amqp_api.c" />
+    <ClInclude Include="..\..\rabbitmq-c\librabbitmq\amqp.h" />
+    <ClCompile Include="..\..\rabbitmq-c\librabbitmq\amqp_connection.c" />
+    <ClCompile Include="..\..\rabbitmq-c\librabbitmq\amqp_mem.c" />
+    <ClInclude Include="..\..\rabbitmq-c\librabbitmq\amqp_private.h" />
+    <ClCompile Include="..\..\rabbitmq-c\librabbitmq\amqp_socket.c" />
+    <ClCompile Include="..\..\rabbitmq-c\librabbitmq\amqp_table.c" />
+    <ClCompile Include="..\..\rabbitmq-c\librabbitmq\amqp_url.c" />
+    <ClInclude Include="..\..\rabbitmq-c\librabbitmq\amqp_socket.h" />
+    <ClCompile Include="..\..\rabbitmq-c\librabbitmq\amqp_tcp_socket.c" />
+    <ClInclude Include="..\..\rabbitmq-c\librabbitmq\amqp_tcp_socket.h" />
+    <ClCompile Include="..\..\rabbitmq-c\librabbitmq\amqp_time.c" />
+    <ClInclude Include="..\..\rabbitmq-c\librabbitmq\amqp_time.h" />
+    <ClCompile Include="..\..\rabbitmq-c\librabbitmq\amqp_consumer.c" />
+    <ClInclude Include="..\..\rabbitmq-c\librabbitmq\amqp_ssl_socket.h" />
+    <ClCompile Include="..\..\rabbitmq-c\librabbitmq\amqp_openssl.c" />
+    <ClCompile Include="..\..\rabbitmq-c\librabbitmq\amqp_openssl_hostname_validation.c" />
+    <ClInclude Include="..\..\rabbitmq-c\librabbitmq\amqp_openssl_hostname_validation.h" />
+    <ClCompile Include="..\..\rabbitmq-c\librabbitmq\amqp_hostcheck.c" />
+    <ClInclude Include="..\..\rabbitmq-c\librabbitmq\amqp_hostcheck.h" />
+    <ClCompile Include="..\..\rabbitmq-c\librabbitmq\amqp_openssl_bio.c" />
+    <ClInclude Include="..\..\rabbitmq-c\librabbitmq\amqp_openssl_bio.h" />
+    <ClInclude Include="..\..\rabbitmq-c\librabbitmq\win32\threads.h" />
+    <ClCompile Include="..\..\rabbitmq-c\librabbitmq\win32\threads.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="D:\DevelopmentEnvironment\workspace\rabbitmq-c-async\vsprojects\ZERO_CHECK.vcxproj">
+      <Project>{971FB14E-83A6-392E-80DA-2C80A3A59486}</Project>
+      <Name>ZERO_CHECK</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

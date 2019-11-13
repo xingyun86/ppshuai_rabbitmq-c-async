@@ -1,0 +1,47 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29503.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "rabbitmq-static", "ThirdParty\rabbitmq-c\vsprojects\librabbitmq\rabbitmq-static.vcxproj", "{78CB40BF-F12A-3E36-9F46-5490A2ED03E3}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "amqp_async", "windows\amqp_async.vcxproj", "{50423350-842E-3605-8B9E-3DF22981F3E3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Windows", "Windows", "{45F209FF-3394-4437-9D79-ACDA1ABE17ED}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Linux", "Linux", "{65CF877D-CC09-4B05-B27B-F524E0D44D4E}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "amqp_async", "linux\amqp_async.vcxproj", "{473C0305-F6A4-480D-80D2-82686C6A02FD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{78CB40BF-F12A-3E36-9F46-5490A2ED03E3}.Debug|x64.ActiveCfg = Debug|x64
+		{78CB40BF-F12A-3E36-9F46-5490A2ED03E3}.Debug|x64.Build.0 = Debug|x64
+		{78CB40BF-F12A-3E36-9F46-5490A2ED03E3}.Release|x64.ActiveCfg = Release|x64
+		{78CB40BF-F12A-3E36-9F46-5490A2ED03E3}.Release|x64.Build.0 = Release|x64
+		{50423350-842E-3605-8B9E-3DF22981F3E3}.Debug|x64.ActiveCfg = Debug|x64
+		{50423350-842E-3605-8B9E-3DF22981F3E3}.Debug|x64.Build.0 = Debug|x64
+		{50423350-842E-3605-8B9E-3DF22981F3E3}.Release|x64.ActiveCfg = Release|x64
+		{50423350-842E-3605-8B9E-3DF22981F3E3}.Release|x64.Build.0 = Release|x64
+		{473C0305-F6A4-480D-80D2-82686C6A02FD}.Debug|x64.ActiveCfg = Debug|x64
+		{473C0305-F6A4-480D-80D2-82686C6A02FD}.Debug|x64.Build.0 = Debug|x64
+		{473C0305-F6A4-480D-80D2-82686C6A02FD}.Debug|x64.Deploy.0 = Debug|x64
+		{473C0305-F6A4-480D-80D2-82686C6A02FD}.Release|x64.ActiveCfg = Release|x64
+		{473C0305-F6A4-480D-80D2-82686C6A02FD}.Release|x64.Build.0 = Release|x64
+		{473C0305-F6A4-480D-80D2-82686C6A02FD}.Release|x64.Deploy.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{78CB40BF-F12A-3E36-9F46-5490A2ED03E3} = {45F209FF-3394-4437-9D79-ACDA1ABE17ED}
+		{50423350-842E-3605-8B9E-3DF22981F3E3} = {45F209FF-3394-4437-9D79-ACDA1ABE17ED}
+		{473C0305-F6A4-480D-80D2-82686C6A02FD} = {65CF877D-CC09-4B05-B27B-F524E0D44D4E}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B6BA55A9-F728-3713-B761-CD081B410496}
+	EndGlobalSection
+EndGlobal

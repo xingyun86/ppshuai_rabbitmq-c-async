@@ -1,0 +1,1 @@
+# Linux下执行yum install librabbitmq-devel librabbitmq下载安装rabbitmq-c依赖库
