@@ -32,24 +32,88 @@
  * SOFTWARE.
  * ***** END LICENSE BLOCK *****
  */
-#define WIN32_LEAN_AND_MEAN
-#if _MSC_VER >= 1900
-#pragma comment(lib,"legacy_stdio_definitions.lib")
-#endif
 
 #include <string>
 #include <stdio.h>
-#include <amqp.h>
-#include <amqp_tcp_socket.h>
-#ifdef _MSC_VER
-#include <winsock2.h>
-#endif // _MSC_VER
 #include "amqp_async.h"
 
 #include <thread>
 
 #define SUMMARY_EVERY_US 1000000
 std::string g_queue_name = "";
+#include <deque>
+#include <mutex>
+std::mutex g_msg_locker;
+std::deque<std::string> g_msg_queue;
+
+#ifdef _MSC_VER
+uint64_t my_amqp_get_monotonic_timestamp(void) {
+	static double NS_PER_COUNT = 0;
+	LARGE_INTEGER perf_count;
+
+	if (0 == NS_PER_COUNT) {
+		LARGE_INTEGER perf_frequency;
+		if (!QueryPerformanceFrequency(&perf_frequency)) {
+			return 0;
+		}
+		NS_PER_COUNT = (double)AMQP_NS_PER_S / perf_frequency.QuadPart;
+	}
+
+	if (!QueryPerformanceCounter(&perf_count)) {
+		return 0;
+	}
+
+	return (uint64_t)(perf_count.QuadPart * NS_PER_COUNT);
+}
+#else
+#include <time.h>
+uint64_t my_amqp_get_monotonic_timestamp(void) {
+#ifdef __hpux
+return (uint64_t)gethrtime();
+#else
+struct timespec tp;
+if (-1 == clock_gettime(CLOCK_MONOTONIC, &tp)) {
+	return 0;
+}
+
+return ((uint64_t)tp.tv_sec * AMQP_NS_PER_S + (uint64_t)tp.tv_nsec);
+#endif
+}
+#endif /* _MSC_VER */
+
+__inline static
+bool send_heart_beat(struct amqp_connection_state_t_ * conn)
+{
+	int err = 0;
+	bool ret = true;
+	uint64_t past = 0;
+	amqp_frame_t hb = { 0 };
+	if (conn->heartbeat == 0)
+	{
+		return ret;
+	}
+	uint64_t dst = conn->next_send_heartbeat.time_point_ns + (conn->heartbeat / 2);
+	past = my_amqp_get_monotonic_timestamp();
+	if (past > dst)
+	{
+		hb.channel = 0;
+		hb.frame_type = AMQP_FRAME_HEARTBEAT;
+		ret = ((err = amqp_send_frame(conn, &hb)) == AMQP_STATUS_OK);
+		if (ret == false)
+		{
+			printf("Error is: %s\n", amqp_error_string(err));
+		}
+		else
+		{
+			printf("Heartbeat sent(%ldd)\n", conn->next_send_heartbeat.time_point_ns / 1000000);
+		}
+	}
+	else
+	{
+		ret = true;
+	}
+	return ret;
+}
 __inline static
 void recv_run_loop(amqp_connection_state_t conn, void * state) {
 	std::chrono::steady_clock::time_point start_time = std::chrono::steady_clock::now();
@@ -283,55 +347,68 @@ void send_run_loop(void * state, amqp_connection_state_t conn, amqp_channel_t ch
 	std::chrono::steady_clock::time_point previous_report_time = start_time;
 	std::chrono::steady_clock::time_point next_summary_time = start_time + std::chrono::microseconds(SUMMARY_EVERY_US);
 
-	char message[256] = "123456789";
-	amqp_bytes_t message_bytes;
-	
-	amqp_boolean_t mandatory = false;
+	std::string message = "";
+		amqp_boolean_t mandatory = false;
 	amqp_boolean_t immediate = false;
 	struct amqp_basic_properties_t_* properties = nullptr;
 
-	message_bytes.len = strlen(message);
-	message_bytes.bytes = message;
-
 	while(*((int*)state) == 1)
 	{
-		std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now();
-		std::chrono::steady_clock::duration delay = now - start_time;
-
-		int status = amqp_basic_publish(conn, channel,
-			amqp_cstring_bytes(exchange_name),
-			amqp_cstring_bytes(queue_name), mandatory, immediate, properties,
-			message_bytes);
-		die_on_error(status,"Publishing");
-		sent++;
-		if (delay != std::chrono::steady_clock::duration::zero()) 
+		g_msg_locker.lock();
+		if (g_msg_queue.empty())
 		{
-			int countOverInterval = sent - previous_sent;
-			double intervalRate = (double)(countOverInterval * SUMMARY_EVERY_US) / (std::chrono::duration_cast<std::chrono::microseconds>(now - previous_report_time).count());
-			printf("%d ms: Sent %d - %d since last report (%.2f Hz)\n",
-				std::chrono::duration_cast<std::chrono::microseconds>(delay).count() / 1000, sent, countOverInterval,
-				intervalRate);
-
-			previous_sent = sent;
-			previous_report_time = now;
-			next_summary_time += std::chrono::microseconds(SUMMARY_EVERY_US);
+			g_msg_locker.unlock();
+			std::this_thread::sleep_for(std::chrono::microseconds(1000000));
+			if (send_heart_beat(conn) == false)
+			{
+				break;
+			}
+			continue;
 		}
 		else
 		{
-			delay = std::chrono::microseconds(SUMMARY_EVERY_US);
-		}
-		while (((sent * SUMMARY_EVERY_US) / std::chrono::duration_cast<std::chrono::microseconds>(delay).count()) > rate_limit && (*((int*)state) == 1))
-		{
-			std::this_thread::sleep_for(std::chrono::microseconds(2000));
-			now = std::chrono::steady_clock::now();
-			delay = now - start_time;
-			if (delay == std::chrono::steady_clock::duration::zero())
+			message = g_msg_queue.front();
+			g_msg_queue.pop_front();
+			g_msg_locker.unlock();
+
+			std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now();
+			std::chrono::steady_clock::duration delay = now - start_time;
+
+			int status = amqp_basic_publish(conn, channel,
+				amqp_cstring_bytes(exchange_name),
+				amqp_cstring_bytes(queue_name), mandatory, immediate, properties,
+				amqp_cstring_bytes(message.c_str()));
+			die_on_error(status, "Publishing");
+			sent++;
+			if (delay != std::chrono::steady_clock::duration::zero())
+			{
+				int countOverInterval = sent - previous_sent;
+				double intervalRate = (double)(countOverInterval * SUMMARY_EVERY_US) / (std::chrono::duration_cast<std::chrono::microseconds>(now - previous_report_time).count());
+				printf("%d ms: Sent %d - %d since last report (%.2f Hz)\n",
+					std::chrono::duration_cast<std::chrono::microseconds>(delay).count() / 1000, sent, countOverInterval,
+					intervalRate);
+
+				previous_sent = sent;
+				previous_report_time = now;
+				next_summary_time += std::chrono::microseconds(SUMMARY_EVERY_US);
+			}
+			else
 			{
 				delay = std::chrono::microseconds(SUMMARY_EVERY_US);
 			}
+			while (((sent * SUMMARY_EVERY_US) / std::chrono::duration_cast<std::chrono::microseconds>(delay).count()) > rate_limit && (*((int*)state) == 1))
+			{
+				std::this_thread::sleep_for(std::chrono::microseconds(2000));
+				now = std::chrono::steady_clock::now();
+				delay = now - start_time;
+				if (delay == std::chrono::steady_clock::duration::zero())
+				{
+					delay = std::chrono::microseconds(SUMMARY_EVERY_US);
+				}
+			}
 		}
-
-		//std::this_thread::sleep_for(std::chrono::microseconds(100));
+		
+		std::this_thread::sleep_for(std::chrono::microseconds(100));
 	}
 
 	{
@@ -432,14 +509,25 @@ int send_rmq_test(void* state)
 int main(int argc, char** argv)
 {
 	int state = 1;
-	std::thread recv_rmq_thread = std::thread([](void* p) {
+	/*std::thread recv_rmq_thread = std::thread([](void* p) {
 		recv_rmq_test(p);
-		}, &state);
+		}, &state);*/
 	std::thread send_rmq_thread = std::thread([](void* p) {
 		send_rmq_test(p);
 		}, &state);
+	std::thread make_msg_thread = std::thread([](void* p) {
+		while (*((int*)p) == 1)
+		{
+			g_msg_locker.lock();
+			g_msg_queue.push_back("");// "msg_" + std::to_string(time(0)));
+			printf("push msg %s\n", g_msg_queue.back().c_str());
+			g_msg_locker.unlock();
+			std::this_thread::sleep_for(std::chrono::seconds(120));
+		}
+		}, &state);
 	getchar();
 	state = 0;
+	make_msg_thread.join();
 	send_rmq_thread.join();
-	recv_rmq_thread.join();
+	//recv_rmq_thread.join();
 }

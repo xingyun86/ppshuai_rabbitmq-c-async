@@ -37,10 +37,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdint.h>
 
 #include <amqp.h>
 #include <amqp_framing.h>
-#include <stdint.h>
+#include <amqp_private.h>
+#include <amqp_tcp_socket.h>
 
 __inline static
 void die(const char* fmt, ...) {

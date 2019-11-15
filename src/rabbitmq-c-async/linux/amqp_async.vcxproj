@@ -37,6 +37,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\amqp_async.h" />
+    <ClInclude Include="..\ThirdParty\rabbitmq-c\rabbitmq-c\librabbitmq\amqp_private.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
@@ -45,11 +46,17 @@
     <Link>
       <LibraryDependencies>pthread;rabbitmq;</LibraryDependencies>
     </Link>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(SolutionDir)ThirdParty\rabbitmq-c\rabbitmq-c\librabbitmq;%(ClCompile.AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Link>
       <LibraryDependencies>pthread;rabbitmq;</LibraryDependencies>
     </Link>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(SolutionDir)ThirdParty\rabbitmq-c\rabbitmq-c\librabbitmq;%(ClCompile.AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
